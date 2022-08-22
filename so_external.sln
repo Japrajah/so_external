@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "asm_mcvs", "asm_mcvs.vcxproj", "{49F7AE99-AF65-4E18-B22E-CBCB6696647B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49F7AE99-AF65-4E18-B22E-CBCB6696647B}.Debug|x64.ActiveCfg = Debug|x64
+		{49F7AE99-AF65-4E18-B22E-CBCB6696647B}.Debug|x64.Build.0 = Debug|x64
+		{49F7AE99-AF65-4E18-B22E-CBCB6696647B}.Debug|x86.ActiveCfg = Debug|Win32
+		{49F7AE99-AF65-4E18-B22E-CBCB6696647B}.Debug|x86.Build.0 = Debug|Win32
+		{49F7AE99-AF65-4E18-B22E-CBCB6696647B}.Release|x64.ActiveCfg = Release|x64
+		{49F7AE99-AF65-4E18-B22E-CBCB6696647B}.Release|x64.Build.0 = Release|x64
+		{49F7AE99-AF65-4E18-B22E-CBCB6696647B}.Release|x86.ActiveCfg = Release|Win32
+		{49F7AE99-AF65-4E18-B22E-CBCB6696647B}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0E0A518-1A4C-4FFD-8B98-E39D152CD963}
+	EndGlobalSection
+EndGlobal
