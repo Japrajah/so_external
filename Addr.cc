@@ -18,6 +18,9 @@ bool mem::ReaderInit()
 	auto chain69 = proc.ScanCurrentModule("48 8B 05 ? ? ? ? 4C 8B 50 28"e); // replace this with pattern scan from file instead reading .text section  from process memory
 	if (!chain69)
 		error("[DEV]Can't find EntityManager!"e);
+	auto chain699 = proc.ScanCurrentModule("4C 8D ? ? ? ? ? 4C 8B ? 48 39 ? 08"e); // replace this with pattern scan from file instead reading .text section  from process memory
+	if (!chain699)
+		error("[DEV]Can't find method_cache(Python)!"e);
 
 	auto g_entitymanager = chain69 + read<int>(chain69 + 3i64) + 7i64;
 
