@@ -19,9 +19,8 @@ public:
 class PyVarObject : public PyObject // object.h 98 line
 {
 private:
-	Py_ssize_t ob_size;
+	Py_ssize_t ob_size;  // 0x10 
 public:
-
 };
 
 
@@ -35,7 +34,6 @@ private:
 	/* 
 	https://github.com/v2v3v4/BigWorld-Engine-2.0.1/blob/master/src/lib/python/Include/object.h#L329
 	*/
-	
 public:
 	 const char* tp_name();
 };

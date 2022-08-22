@@ -177,6 +177,7 @@
     <ClInclude Include="common\shellcode.h" />
     <ClInclude Include="common\util.h" />
     <ClInclude Include="Addr.hh" />
+    <ClInclude Include="BigWorld\py_offsets.hh" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="common\dbvm.asm">

@@ -4,6 +4,6 @@
 int main()
 {
 	mem::ReaderInit();
-	std::cout << std::hex << mem::Base <<std::endl;
+	std::cout << std::hex << game::Base <<std::endl;
 
 }
