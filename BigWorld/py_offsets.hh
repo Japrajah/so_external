@@ -24,7 +24,7 @@ namespace python
 
 		}
 
-		namespace dictObject //  : PyVarObject : PyObject
+		namespace dictObject //  
 		{
 			constexpr auto   ma_fill = ob_type + nextptr; //   Py_ssize_t 
 			constexpr auto ma_used = ma_fill + nextptr;  //    Py_ssize_t 
