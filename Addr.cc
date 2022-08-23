@@ -1,9 +1,10 @@
 #include "Addr.hh"
 #include "common/process.h"
+#include <Windows.h>
 static  DBVM dbvm;
 const Process* g_proc = nullptr;
 unsigned long long game::Base;
-
+void* game_mem;
 bool mem::ReaderInit()
 {
 	auto pid = GetPIDByProcessName("sogame.exe"e);
@@ -14,16 +15,24 @@ bool mem::ReaderInit()
 	const auto proc = Process(processkrnl, pid, 0);
 	g_proc = &proc;
 	game::Base = proc.GetBaseAddress();
+	if (!game::Base)
+		error("[DEV]Can't Get Base Address!"e);
+	
+auto  proc_size = proc.GetSizeOfImage();
+game_mem = VirtualAlloc(0, proc_size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+if (!game_mem)
+error("[DEV]Failed allocate game_mem"e);
 
-	auto chain69 = proc.ScanCurrentModule("48 8B 05 ? ? ? ? 4C 8B 50 28"e); // replace this with pattern scan from file instead reading .text section  from process memory
-	if (!chain69)
-		error("[DEV]Can't find EntityManager!"e);
-	auto chain699 = proc.ScanCurrentModule("4C 8D ? ? ? ? ? 4C 8B ? 48 39 ? 08"e); // replace this with pattern scan from file instead reading .text section  from process memory
-	if (!chain699)
-		error("[DEV]Can't find method_cache(Python)!"e);
 
-	auto g_entitymanager = chain69 + read<int>(chain69 + 3i64) + 7i64;
+auto chain69 = proc.ScanCurrentModule("48 8B 05 ? ? ? ? 4C 8B 50 28"e); // replace this with pattern scan from file instead reading .text section  from process memory
+if (!chain69)
+error("[DEV]Can't find EntityManager!"e);
+auto g_entitymanager = chain69 + read<int>(chain69 + 3i64) + 7i64;
 
+
+read(game::Base, game_mem, proc_size);
+
+	
 }
 
 

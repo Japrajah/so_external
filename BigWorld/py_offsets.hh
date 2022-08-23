@@ -19,8 +19,20 @@ namespace python
 			constexpr auto tp_basicsize = tp_name + nextptr; // size_t
 			constexpr auto tp_itemsize = tp_basicsize + nextptr; //  size_t
 			constexpr auto tp_flags = 0xA8; // long
+			constexpr auto tp_dictoffset = 0x120; // ???  long size_t ???
 			constexpr auto tp_base =  0x100; // PyTypeObject*  
+
 		}
+
+		namespace dictObject //  : PyVarObject : PyObject
+		{
+			constexpr auto   ma_fill = ob_type + nextptr; //   Py_ssize_t 
+			constexpr auto ma_used = ma_fill + nextptr;  //    Py_ssize_t 
+			constexpr auto  ma_mask = ma_used + nextptr;  //    Py_ssize_t 
+			constexpr auto   ma_table = ma_mask + nextptr;  //  PyDictEntry*
+
+		}
+
 		namespace ListObject //  : PyVarObject : PyObject
 		{
 			constexpr auto   ob_item = VarObject::ob_size + nextptr; // PyObject** 

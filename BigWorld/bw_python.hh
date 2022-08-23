@@ -8,8 +8,8 @@
 
 // ебал в рот питон просто loadlibary игры сделаю
 typedef size_t Py_ssize_t; 
-
-
+class PyTypeObject	;
+class PyObject;
 // typeobject.c
 struct method_cache_entry {
 	unsigned int version;
@@ -18,7 +18,6 @@ struct method_cache_entry {
 };
 
 
-class PyTypeObject;
 class PyObject  // object.h 78 line
 {
 private:
