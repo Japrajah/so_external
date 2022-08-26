@@ -20,18 +20,16 @@ void TestLoop()
 			auto entity = iter->entity();
 			iter = iter->next();
 			if (!entity) continue;
-			auto type = entity->ob_type();
-			if (!type) continue;
-			auto name = type->tp_name();
-			if (name == "Avatar")
-			{
-
-				auto avatar = ((Avatar*)entity);
+		
+				auto avatarfn = BW_Cast(entity, NPC); // trash
+				auto avatar = avatarfn();
+				if (!avatar) continue;
+				
 				auto nickname = avatar->name();
 				//auto skeleton = avatar->skeletonCollider();
 				std::wcout << nickname->to_wstring() << std::endl;
 				//std::cout << dict <<" <-dict " << name << std::endl;
-			}
+			
 		}
 
 		Sleep(1);

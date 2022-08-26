@@ -17,7 +17,14 @@ struct Avatar : public Entity
 	//Py_Attribute(PyObject*, skeletonCollider);
 
 };
+struct PlayerAvatar : public Avatar
+{
 
+};
+struct NPC : public Avatar
+{
+
+};
 struct EntityMapEntry
 {
 	EntityMapEntry* next();
