@@ -3,7 +3,9 @@
 
 int main()
 {
-	mem::ReaderInit();
-	std::cout << std::hex << game::Base <<std::endl;
+	game::ReaderInit();
+	std::cout << std::hex << game::g_entitymanager << std::endl;
+	read<int>(game::g_entitymanager);
+}
 
 }

@@ -138,6 +138,9 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="BigWorld\bw_entities.hh" />
     <ClInclude Include="BigWorld\bw_python.hh" />
+    <ClInclude Include="BigWorld\bw_offsets.hh" />
     <ClInclude Include="common\async_wininet.h" />
     <ClInclude Include="common\compiletime.h" />
     <ClInclude Include="common\dbvm.h" />
@@ -180,7 +184,7 @@
     <ClInclude Include="BigWorld\py_offsets.hh" />
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="common\dbvm.asm">
+    <MASM Include="common\dbvm_.asm">
       <FileType>Document</FileType>
     </MASM>
     <MASM Include="common\kernel_.asm">

@@ -31,13 +31,14 @@ private:
 public:
 	 Kernel& kernel;
 
-	Process( Kernel& kernel, DWORD Pid, const char* szDLLName = 0) : kernel(kernel), Pid(Pid) {
+	 
+	 Process( Kernel& kernel, DWORD Pid, const char* szDLLName = 0) : kernel(kernel), Pid(Pid) {
 		if (!kernel.MapProcess(Pid))
 			throw;
 		if (!SetModule(szDLLName))
 			throw; 
 	}
-
+	
 	uintptr_t GetBaseAddress() const { return BaseAddress; }
 	uintptr_t GetSizeOfImage() const { return SizeOfImage; }
 	DWORD GetPid() const { return Pid; }

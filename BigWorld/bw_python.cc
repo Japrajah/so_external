@@ -13,6 +13,7 @@ const char* PyTypeObject::tp_name()
 {
 	char str_buffer[128]{}; // actualy u dont need use it because i want use s_types_ (super types)  and compare id /or pointer instead string 
 	read(((uintptr_t)this + python::TypeObject::tp_name), str_buffer, 128);
+	return  str_buffer;
 }
 
 size_t PyTypeObject::tp_basicsize()

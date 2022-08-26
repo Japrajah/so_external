@@ -1,19 +1,15 @@
 #pragma once
 
-
-namespace game
+struct game
 {
-	extern unsigned long long Base;
-	extern unsigned long long g_entitymanager;
-}
+	static inline unsigned long long Base;
+	static inline unsigned long long g_entitymanager;
+	static bool ReaderInit();
+};
 
 
 
-namespace mem
-{
-	bool ReaderInit();
 
-}
 
 
 
