@@ -19,3 +19,8 @@ template <typename T> T read(unsigned long long address) {
 	read(address, &buffer, sizeof(T));
 	return buffer;
 }
+template <typename T> T read(void* address) {
+	T buffer{};
+	read((unsigned long long )address, &buffer, sizeof(T));
+	return buffer;
+}

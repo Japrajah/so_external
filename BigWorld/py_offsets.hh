@@ -1,5 +1,5 @@
 #pragma once
-namespace python
+namespace py
 {
 	const auto constexpr nextptr = 8;
 	static_assert(nextptr == 8, "should be always 8"); // because write +8 ugly for me
@@ -30,6 +30,8 @@ namespace python
 			constexpr auto ma_used = ma_fill + nextptr;  //    Py_ssize_t 
 			constexpr auto  ma_mask = ma_used + nextptr;  //    Py_ssize_t 
 			constexpr auto   ma_table = ma_mask + nextptr;  //  PyDictEntry*
+			constexpr auto   ma_fn = ma_table + nextptr;  // 
+			constexpr auto   ma_smalltable = ma_fn + nextptr;  // 
 
 		}
 

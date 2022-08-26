@@ -1,23 +1,24 @@
 #include "bw_entities.hh"
 #include "bw_offsets.hh"
 #include "../Addr.hh"
-#define READ(type,offset)  read<type>((unsigned long long)this + offset);
+#define THISREAD(type,offset)  read<type>((unsigned long long)this + offset)
 
 
 // EntityMapEntry
 EntityMapEntry* EntityMapEntry::next()
 {
-	return READ(EntityMapEntry*, bw::EntityManager::next);
+	return THISREAD(EntityMapEntry*, bw::EntityManager::next);
 }
 
 Entity* EntityMapEntry::entity()
 {
-	return READ(Entity*, bw::EntityManager::Entity);
+	auto ent = THISREAD(unsigned __int64, bw::EntityManager::Entity);
+	return (Entity*)(ent) ; 
 }
 
 int EntityMapEntry::entityID()
 {
-	return READ(int, bw::EntityManager::EntityID);
+	return THISREAD(int, bw::EntityManager::EntityID);
 }
 // EntityManager
 EntityManager* EntityManager::instance()
@@ -25,14 +26,11 @@ EntityManager* EntityManager::instance()
 	return reinterpret_cast<EntityManager*>(game::g_entitymanager);
 }
 
-EntityMapEntry* EntityManager::Entities()
+EntityMap EntityManager::Entities()
 {
-	return READ(EntityMapEntry*, bw::EntityManager::enteredEntities_);
-}
-int EntityManager::Entities_count()
-{
-		return READ(int , bw::EntityManager::EntitiesCount);
+	return THISREAD(EntityMap, bw::EntityManager::enteredEntities_);
 }
 
 
-#undef READ
+
+#undef THISREAD
