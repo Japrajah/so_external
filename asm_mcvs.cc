@@ -24,10 +24,12 @@ void TestLoop()
 			auto name = type->tp_name();
 			auto dict = entity->ob_dict();
 			if (!dict) continue;
-		
-	
-
-			std::cout << dict <<" <-dict " << name << std::endl;
+			if (name == "PlayerAvatar")
+			{
+			auto nickname = (PyUnicodeObject*)dict->find_item("name");
+			std::wcout << nickname->to_wstring() << std::endl;
+			//std::cout << dict <<" <-dict " << name << std::endl;
+			}
 		}
 		Sleep(1000);
 		

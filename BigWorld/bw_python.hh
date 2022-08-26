@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#define Py_SIZE(pyobject)   *(unsigned int*)((unsigned long long )pyobject + 0x10) 
-#define Py_TYPE(pyobject)   *(unsigned int*)((unsigned long long )pyobject + 0x8) 
+//#define Py_SIZE(pyobject)   *(unsigned int*)((unsigned long long )pyobject + 0x10) 
+//#define Py_TYPE(pyobject)   *(unsigned int*)((unsigned long long )pyobject + 0x8) 
  // http://pics.wikireality.ru/upload/9/9b/Thonk.png мое ебало когда думаю как удобней сделать чтение  классов
 // либо делать read<PyObject> и уже работать с таким объектом
 // либо делать read<PyObject*> и через методы читать от "this" нужные поля 
@@ -11,6 +11,7 @@
 typedef size_t Py_ssize_t; 
 class PyTypeObject	;
 class PyDictObject;
+class PyStringObject;
 
 class PyObject;
 // typeobject.c
@@ -31,7 +32,7 @@ public:
 struct PyDictEntry
 {
 	Py_ssize_t 	me_hash;
-	PyObject* me_key;
+	PyStringObject* me_key;
 	PyObject* me_value;
 };
 
@@ -41,6 +42,8 @@ class PyDictObject : public PyObject
 
 		PyDictEntry	at(int i);
 		size_t ma_mask();
+	
+	
 		PyObject* find_item(const char* itemname);
 
 	Py_ssize_t _ma_fill;  /* # Active + # Dummy */
@@ -70,7 +73,24 @@ private:
 public:
 	size_t ob_size();
 };
+class PyStringObject : public PyVarObject // object.h 98 line
+{
+private:
+	Py_ssize_t hash;  
+	const char str[128];
+public:
+	size_t lenght() { return this->ob_size(); };
+	std::string to_string();
+};
 
+class PyUnicodeObject : public PyVarObject // object.h 98 line
+{
+private:
+	const wchar_t* str;
+public:
+	size_t lenght() { return this->ob_size(); };
+	std::wstring to_wstring();
+};
 
 class PyTypeObject : public PyVarObject //  object.h 325 line
 {
