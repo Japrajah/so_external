@@ -1,6 +1,7 @@
-﻿#include <iostream>
+﻿#include <Windows.h>
+#include <iostream>
 #include <thread>
-#include <Windows.h>
+
 #include "Addr.hh"
 #include "BigWorld/bw_entities.hh"
 
@@ -22,28 +23,19 @@ void TestLoop()
 			auto type = entity->ob_type();
 			if (!type) continue;
 			auto name = type->tp_name();
-			auto dict = entity->ob_dict();
-			if (!dict) continue;
-			if (name == "PlayerAvatar")
+			if (name == "Avatar")
 			{
-			auto nickname = (PyUnicodeObject*)dict->find_item("name");
-			std::wcout << nickname->to_wstring() << std::endl;
-			//std::cout << dict <<" <-dict " << name << std::endl;
+
+				auto avatar = ((Avatar*)entity);
+				auto nickname = avatar->name();
+				//auto skeleton = avatar->skeletonCollider();
+				std::wcout << nickname->to_wstring() << std::endl;
+				//std::cout << dict <<" <-dict " << name << std::endl;
 			}
 		}
-		Sleep(1000);
-		
+
+		Sleep(1);
 	}
-
-
-
-
-
-
-
-
-
-
 
 
 }
@@ -56,7 +48,9 @@ void TestLoop()
 
 int main()
 {
+	setlocale(LC_ALL, "Russian");
 	game::ReaderInit();
+
 	std::thread(TestLoop).join();
 	Sleep(-1);
 }

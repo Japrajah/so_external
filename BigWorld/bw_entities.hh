@@ -1,9 +1,21 @@
 #pragma once
 #include "bw_python.hh"
+
+
+
+
+
+
 struct Entity : public PyObject
 {
 
 	
+};
+struct Avatar : public Entity
+{
+	Py_Attribute(PyUnicodeObject*, name);
+	//Py_Attribute(PyObject*, skeletonCollider);
+
 };
 
 struct EntityMapEntry

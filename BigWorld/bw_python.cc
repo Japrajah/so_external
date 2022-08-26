@@ -4,6 +4,29 @@
 #include "py_offsets.hh"
 #define THISREAD(type,offset)  read<type>((unsigned long long)this + offset)
 
+
+ // helper
+//https://github.com/v2v3v4/BigWorld-Engine-2.0.1/blob/master/src/lib/python/Objects/stringobject.c#L1206
+long py_string_hash(const char* a)
+{
+	auto len = strlen(a);
+	auto lencopy = len;
+	auto p = (unsigned char*)a;
+	long x = *p << 7;
+	while (--len >= 0)
+		x = (1000003 * x) ^ *p++;
+	x ^= lencopy;
+	if (x == -1)
+		x = -2;
+	return x;
+}
+
+
+
+
+
+
+
 /// PyObject
 size_t PyObject::ob_refcnt()
 {
@@ -28,7 +51,7 @@ PyDictObject* PyObject::ob_dict()
 
 
 /// PyDictObject
-PyDictEntry	PyDictObject::at(int idx)
+PyDictEntry	PyDictObject::at(int idx) // need read to buf  and after just PyDictObject[idx]
 {
 	return read<PyDictEntry>(THISREAD(uintptr_t,py::dictObject::ma_table) + sizeof(PyDictEntry) * idx);
 }
@@ -73,7 +96,7 @@ std::string PyStringObject::to_string()
 	auto slen = this->lenght() + 1;
 	char stack_buffer[128];
 	if (slen <= 1 || slen >= 127)
-		return std::string("str_to_long");
+		return std::string("str_error");
 	read((uintptr_t)(&this->str), stack_buffer, slen );
 	stack_buffer[127] = '\0';
 	return std::string(stack_buffer);
@@ -90,7 +113,7 @@ std::wstring PyUnicodeObject::to_wstring()
 	auto slen =this->lenght() +1;
 	wchar_t stack_buffer[128];
 	if (slen <= 1 || slen >= 127)
-		return std::wstring(L"wstr_to_long");
+		return std::wstring(L"wstr_error");
 	read(read<uintptr_t>(&this->str), stack_buffer, slen*2);
 	stack_buffer[127] = L'\0';
 	return std::wstring(stack_buffer);

@@ -7,7 +7,13 @@
 // либо делать read<PyObject*> и через методы читать от "this" нужные поля 
 // второй варик мне нравится больше , но это как-то стремно как по мне
 
-// ебал в рот питон просто loadlibary игры сделаю
+#define Py_Attribute(type,name)  type name()   {      \
+   auto dict = this->ob_dict();                                          \
+     if (!dict) return nullptr; \
+return (type)dict->find_item(#name); };                                  \
+  \
+
+
 typedef size_t Py_ssize_t; 
 class PyTypeObject	;
 class PyDictObject;
@@ -79,9 +85,12 @@ private:
 	Py_ssize_t hash;  
 	const char str[128];
 public:
-	size_t lenght() { return this->ob_size(); };
+	
+	size_t lenght() { return this->ob_size();  };
 	std::string to_string();
 };
+
+
 
 class PyUnicodeObject : public PyVarObject // object.h 98 line
 {
