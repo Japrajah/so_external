@@ -21,8 +21,8 @@ void TestLoop()
 			iter = iter->next();
 			if (!entity) continue;
 		
-				auto f = BW_Cast(entity, PlayerAvatar); // trash
-				auto avatar = f();
+				auto avatar = BW_Cast(entity, PlayerAvatar); // trash
+			
 				if (!avatar) continue;
 				CursorCamera* test = avatar->AvatarCam();
 				if (!test) continue;

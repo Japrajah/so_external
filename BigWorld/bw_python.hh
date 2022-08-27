@@ -18,7 +18,7 @@ return (type)dict->find_item(#name); };                                  \
 
 #define BW_Cast(pyobject,NAME) [&] () { auto type = pyobject->ob_type();         \
     if (!type) return (NAME*)nullptr;                                                   \
-        if (type->tp_name() == #NAME) return (NAME*)pyobject; return (NAME*)nullptr; };   
+        if (type->tp_name() == #NAME) return (NAME*)pyobject; return (NAME*)nullptr; }()   
 
 
 typedef size_t Py_ssize_t; 
