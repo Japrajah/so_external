@@ -1,6 +1,20 @@
 #pragma once
 namespace bw
 {
+
+	namespace Entity
+	{
+
+
+
+
+
+		constexpr auto pos = 0x40; // Vector3
+
+	}
+
+
+
 	namespace EntityManager
 	{
 

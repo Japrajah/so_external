@@ -9,7 +9,7 @@
 
 struct Entity : public PyObject
 {
-
+	Vector3 position();
 
 	
 };
@@ -17,6 +17,7 @@ struct Avatar : public Entity
 {
 	Py_dicthead;
 	Py_Attribute(Avatar,PyUnicodeObject*, name);
+
 
 /*Avatar.Entity.PyObjectPlus.object
 {
@@ -315,9 +316,20 @@ INT32 base_space_id
 
 struct CursorCamera : public PyObject // CursorCamera : BaseCamera : PyObjectPlus : object
 {
-	char pad[0x18];
-	Matrix4x4 matrix;
+
 };
+struct CameraImpl  // CursorCamera : BaseCamera : PyObjectPlus : object
+{
+	
+	char pad[0x1c0];
+	Matrix4x4 matrix;
+	bool ProjectWorldToScreen(Vector3 target, Vector2* screenpos);
+	static CameraImpl* Instance();
+};
+
+
+
+
 
 
 struct PlayerAvatar : public Avatar

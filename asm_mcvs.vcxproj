@@ -159,6 +159,7 @@
     <ClInclude Include="BigWorld\bw_entities.hh" />
     <ClInclude Include="BigWorld\bw_python.hh" />
     <ClInclude Include="BigWorld\bw_offsets.hh" />
+    <ClInclude Include="BigWorld\bw_globals.hh" />
     <ClInclude Include="common\async_wininet.h" />
     <ClInclude Include="common\compiletime.h" />
     <ClInclude Include="common\dbvm.h" />

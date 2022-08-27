@@ -9,9 +9,13 @@
 void TestLoop()
 {
 	auto entitymanager = EntityManager::instance();
+	
 	std::cout << entitymanager << std::endl;
 	while (true)
 	{
+		auto camera = CameraImpl::Instance();
+		if (!camera) continue;
+	
 		auto entitiesmap = entitymanager->Entities();
 		auto iter = entitiesmap.iter->next();
 
@@ -28,7 +32,11 @@ void TestLoop()
 				if (!test) continue;
 				auto testtp = test->ob_type();
 				if (!test) continue;
-		
+				Vector2 testscreen;
+				auto testpos = avatar->position();
+				if (!camera->ProjectWorldToScreen(testpos,&testscreen))  continue;
+				
+				
 				//auto skeleton = avatar->skeletonCollider();
 				std::cout<< test << " camera "  << " type " << testtp->fullname() << std::endl;
 
