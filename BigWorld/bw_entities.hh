@@ -1,5 +1,6 @@
 #pragma once
 #include "bw_python.hh"
+#include "Vectors.hh"
 
 
 
@@ -17,12 +18,23 @@ struct Avatar : public Entity
 	Py_dicthead;
 
 	Py_Attribute(Avatar,PyUnicodeObject*, name);
+	Py_Attribute(Avatar,PyObject*, position);
+
 	//Py_Attribute(PyObject*, skeletonCollider);
 
 };
+
+struct CursorCamera : public PyObject // CursorCamera : BaseCamera : PyObjectPlus : object
+{
+	char pad[0x18];
+	Matrix4x4 matrix;
+};
+
+
 struct PlayerAvatar : public Avatar
 {
-	
+	Py_dicthead;
+	Py_Attribute(PlayerAvatar, CursorCamera*, AvatarCam); // CursorCamera : BaseCamera : PyObjectPlus : object
 
 };
 struct Creature : public Avatar
@@ -33,6 +45,7 @@ struct Creature : public Avatar
 struct NPC : public Avatar
 {
 	
+
 
 };
 struct EntityMapEntry

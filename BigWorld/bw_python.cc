@@ -90,13 +90,16 @@ PyObject* PyDictObject::find_item(const char* itemname) // 	PyObject* find_item(
 		auto  key_name = pkey->to_string();
 		if (str == key_name) 
 		{
+		
 			auto result = ep.me_value;
+			str.~basic_string();
 			delete[] dict_entry;
 			return result;
 		}
 			
 	}
-	FAIL:
+FAIL:
+	str.~basic_string();
 	 delete[] dict_entry;
 	return 0;
 }
@@ -172,6 +175,17 @@ PyTypeObject* PyTypeObject::tp_base()
 {
 	return THISREAD(PyTypeObject*, py::TypeObject::tp_base);
 }
+std::string PyTypeObject::fullname() {
+	std::string temp = this->tp_name();
+	for (auto parrent = this->tp_base(); parrent; parrent = parrent->tp_base()) {
+		if (!parrent) break;
+		auto name = parrent->tp_name();
+		if (name.empty()) break;
+		temp = temp + " : " + std::string(name);
+	}
+	return temp;
+}
+
 ///\ 
 
 #undef THISREAD

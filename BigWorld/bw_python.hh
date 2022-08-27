@@ -13,7 +13,7 @@
 return (type)dict->find_item(#name); };                                  \
   \
 
-#define Py_dicthead static inline int dictoffset = 0;
+#define Py_dicthead  private: static inline int dictoffset = 0; public:   
 
 
 #define BW_Cast(pyobject,NAME) [&] () { auto type = pyobject->ob_type();         \
@@ -127,6 +127,7 @@ public:
 	 int tp_dictoffset();
 
 	 PyTypeObject* tp_base();
+	 std::string fullname();
 };
 
 // py get  attr 

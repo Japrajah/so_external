@@ -21,21 +21,23 @@ void TestLoop()
 			iter = iter->next();
 			if (!entity) continue;
 		
-				auto f = BW_Cast(entity, Creature); // trash
+				auto f = BW_Cast(entity, PlayerAvatar); // trash
 				auto avatar = f();
 				if (!avatar) continue;
-				
-				auto nickname = avatar->name();
-
+				CursorCamera* test = avatar->AvatarCam();
+				if (!test) continue;
+				auto testtp = test->ob_type();
+				if (!test) continue;
+		
 				//auto skeleton = avatar->skeletonCollider();
-				std::wcout << nickname->to_wstring() << std::endl;
+				std::cout<< test << " camera "  << " type " << testtp->fullname() << std::endl;
 
 				//std::cout << dict <<" <-dict " << name << std::endl;
 			
 		}
 
 		Sleep(1);
-	}
+	} 
 
 
 }

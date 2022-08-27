@@ -182,6 +182,7 @@
     <ClInclude Include="common\util.h" />
     <ClInclude Include="Addr.hh" />
     <ClInclude Include="BigWorld\py_offsets.hh" />
+    <ClInclude Include="BigWorld\Vectors.hh" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="common\dbvm_.asm">
