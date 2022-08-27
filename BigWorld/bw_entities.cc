@@ -19,7 +19,7 @@ CameraImpl* CameraImpl::Instance()
 
 bool CameraImpl::ProjectWorldToScreen( Vector3 position, Vector2* screenpos)
 {
-	//auto matrix = read<Matrix4x4>(&this->matrix);
+	//auto matrix = read<Matrix4x4>(&this->matrix); // 0x28 w 0x30 h resolution
 	auto matrix = THISREAD(Matrix4x4,0x1e4);
 
 	float sw = bw_globals::Wscreen, sh = bw_globals::Hscreen;
