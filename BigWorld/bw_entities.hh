@@ -9,20 +9,30 @@
 struct Entity : public PyObject
 {
 
+
 	
 };
 struct Avatar : public Entity
 {
-	Py_Attribute(PyUnicodeObject*, name);
+	Py_dicthead;
+
+	Py_Attribute(Avatar,PyUnicodeObject*, name);
 	//Py_Attribute(PyObject*, skeletonCollider);
 
 };
 struct PlayerAvatar : public Avatar
 {
+	
+
+};
+struct Creature : public Avatar
+{
+	
 
 };
 struct NPC : public Avatar
 {
+	
 
 };
 struct EntityMapEntry

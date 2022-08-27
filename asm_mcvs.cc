@@ -21,13 +21,15 @@ void TestLoop()
 			iter = iter->next();
 			if (!entity) continue;
 		
-				auto avatarfn = BW_Cast(entity, NPC); // trash
-				auto avatar = avatarfn();
+				auto f = BW_Cast(entity, Creature); // trash
+				auto avatar = f();
 				if (!avatar) continue;
 				
 				auto nickname = avatar->name();
+
 				//auto skeleton = avatar->skeletonCollider();
 				std::wcout << nickname->to_wstring() << std::endl;
+
 				//std::cout << dict <<" <-dict " << name << std::endl;
 			
 		}

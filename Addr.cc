@@ -17,7 +17,7 @@ bool game::ReaderInit()
 	if (!game::Base)
 		error("[DEV]Can't Get Base Address!"e);
 	
-
+	
 
 auto chain69 = g_proc->ScanCurrentModule("48 8B 05 ? ? ? ? 4C 8B 50 28"e); // replace this with pattern scan from file instead reading .text section  from process memory
 if (!chain69)

@@ -7,11 +7,14 @@
 // либо делать read<PyObject*> и через методы читать от "this" нужные поля 
 // второй варик мне нравится больше , но это как-то стремно как по мне
 
-#define Py_Attribute(type,name)  type name()   {      \
-   auto dict = this->ob_dict();                                          \
+#define Py_Attribute(CLASS,type,name)  type name()   {      \
+   auto dict = this->ob_dict( &CLASS::dictoffset);                                          \
      if (!dict) return nullptr; \
 return (type)dict->find_item(#name); };                                  \
   \
+
+#define Py_dicthead static inline int dictoffset = 0;
+
 
 #define BW_Cast(pyobject,NAME) [&] () { auto type = pyobject->ob_type();         \
     if (!type) return (NAME*)nullptr;                                                   \
@@ -35,6 +38,7 @@ private:
 	PyTypeObject* _ob_type;
 public:
 	PyTypeObject* ob_type();
+	PyDictObject* ob_dict(int* dictoffset);
 	PyDictObject* ob_dict();
 	size_t ob_refcnt();
 

@@ -7,6 +7,7 @@
 // EntityMapEntry
 EntityMapEntry* EntityMapEntry::next()
 {
+	
 	return THISREAD(EntityMapEntry*, bw::EntityManager::next);
 }
 

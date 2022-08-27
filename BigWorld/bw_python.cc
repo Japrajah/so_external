@@ -38,6 +38,18 @@ PyTypeObject* PyObject::ob_type()
 	return read<PyTypeObject*>(&this->_ob_type);
 }
 
+PyDictObject* PyObject::ob_dict(int* dictoffset)
+{
+	if (*dictoffset == 0)
+	{
+		auto type = this->ob_type();
+		if (!type) return nullptr;
+		*dictoffset = type->tp_dictoffset();
+		if (!dictoffset) return nullptr;
+	}
+	return THISREAD(PyDictObject*, *dictoffset);
+}
+
 PyDictObject* PyObject::ob_dict()
 {
 	auto type = this->ob_type();
@@ -65,17 +77,26 @@ size_t	PyDictObject::ma_mask()
 PyObject* PyDictObject::find_item(const char* itemname) // 	PyObject* find_item(const char* itemname)
 {
 	auto str = std::string(itemname);
-	for (size_t i = 0; i <= this->ma_mask(); i++)  // https://github.com/v2v3v4/BigWorld-Engine-2.0.1/blob/master/src/lib/python/Objects/dictobject.c#L944
+	auto dict_size = this->ma_mask();
+	auto dict_entry = new PyDictEntry[dict_size+1];
+	auto p_entry = THISREAD(uintptr_t, py::dictObject::ma_table);
+	if (!read(p_entry, dict_entry, dict_size * sizeof(PyDictEntry))) return 0;
+	for (size_t i = 0; i <= dict_size; i++)  // https://github.com/v2v3v4/BigWorld-Engine-2.0.1/blob/master/src/lib/python/Objects/dictobject.c#L944
 	{
-		auto ep = this->at(i);
+		//auto ep = this->at(i); external parse
+		auto ep = dict_entry[i];
 		auto pkey= ep.me_key;
 		if (!pkey) continue;
 		auto  key_name = pkey->to_string();
-		if (str == key_name)
-			return ep.me_value;
+		if (str == key_name) 
+		{
+			auto result = ep.me_value;
+			delete[] dict_entry;
+			return result;
+		}
+			
 	}
-
-
+	 delete[] dict_entry;
 	return 0;
 }
 ///\ 
