@@ -320,9 +320,6 @@ struct CursorCamera : public PyObject // CursorCamera : BaseCamera : PyObjectPlu
 };
 struct CameraImpl  // CursorCamera : BaseCamera : PyObjectPlus : object
 {
-	
-	char pad[0x1c0];
-	Matrix4x4 matrix;
 	bool ProjectWorldToScreen(Vector3 target, Vector2* screenpos);
 	static CameraImpl* Instance();
 };
