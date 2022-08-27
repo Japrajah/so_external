@@ -80,7 +80,7 @@ PyObject* PyDictObject::find_item(const char* itemname) // 	PyObject* find_item(
 	auto dict_size = this->ma_mask();
 	auto dict_entry = new PyDictEntry[dict_size+1];
 	auto p_entry = THISREAD(uintptr_t, py::dictObject::ma_table);
-	if (!read(p_entry, dict_entry, dict_size * sizeof(PyDictEntry))) return 0;
+	if (!read(p_entry, dict_entry, dict_size * sizeof(PyDictEntry))) goto FAIL;
 	for (size_t i = 0; i <= dict_size; i++)  // https://github.com/v2v3v4/BigWorld-Engine-2.0.1/blob/master/src/lib/python/Objects/dictobject.c#L944
 	{
 		//auto ep = this->at(i); external parse
@@ -96,6 +96,7 @@ PyObject* PyDictObject::find_item(const char* itemname) // 	PyObject* find_item(
 		}
 			
 	}
+	FAIL:
 	 delete[] dict_entry;
 	return 0;
 }
