@@ -15,7 +15,7 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
 bool CreateConsole = true;
-
+constexpr auto menu_key = VK_F1;
 struct CurrentProcess {
 	DWORD ID;
 	HANDLE Handle;
@@ -181,7 +181,7 @@ void InputHandler() {
 
 
 void Render() {
-	if (GetAsyncKeyState(VK_INSERT) & 1) menu_vars::show_menu = !menu_vars::show_menu;
+	if (GetAsyncKeyState(menu_key) & 1) menu_vars::show_menu = !menu_vars::show_menu;
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
