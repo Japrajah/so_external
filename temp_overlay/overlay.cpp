@@ -253,8 +253,10 @@ void MainLoop() {
 			OldRect = TempRect;
 			Process.WindowWidth = TempRect.right;
 			Process.WindowHeight = TempRect.bottom;
+			DirectX9.pParameters.BackBufferWidth = Process.WindowWidth;
+			DirectX9.pParameters.BackBufferHeight = Process.WindowHeight;
 			SetWindowPos(Overlay.Hwnd, (HWND)0, TempPoint.x, TempPoint.y, Process.WindowWidth, Process.WindowHeight, SWP_NOREDRAW);
-			update_resolution();
+			DirectX9.pDevice->Reset(&DirectX9.pParameters);
 		}
 		Render();
 	}
@@ -388,8 +390,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 			DirectX9.pParameters.BackBufferWidth = LOWORD(lParam);
 			DirectX9.pParameters.BackBufferHeight = HIWORD(lParam);
 			HRESULT hr = DirectX9.pDevice->Reset(&DirectX9.pParameters);
-			/*if (hr == D3DERR_INVALIDCALL)
-				IM_ASSERT(0);*/
+			if (hr == D3DERR_INVALIDCALL)
+				update_resolution();
 			ImGui_ImplDX9_CreateDeviceObjects();
 		}
 		break;
