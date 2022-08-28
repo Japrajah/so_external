@@ -5,17 +5,29 @@
 
 #define THISREAD(type,offset)  read<type>((unsigned long long)this + offset)
 
+//#define THISWRITE(type,offset,VALUE)  write<type>((unsigned long long)this + offset,VALUE)
+
 Vector3 Entity::position()
 {
 	return THISREAD(Vector3, bw::Entity::pos);
 }
+// Avatar
 
+
+//\
+
+
+
+
+
+
+
+
+// CameraImpl
 CameraImpl* CameraImpl::Instance()
 {
 	return read<CameraImpl*>(game::umbra_camera);
 }
-
-
 
 bool CameraImpl::ProjectWorldToScreen( Vector3 position, Vector2* screenpos)
 {
@@ -35,6 +47,10 @@ bool CameraImpl::ProjectWorldToScreen( Vector3 position, Vector2* screenpos)
 	if (screenpos->y > 10000 || screenpos->y < -10000) return false;
 	return true;
 }
+
+//\
+
+
 
 
 
@@ -56,6 +72,9 @@ int EntityMapEntry::entityID()
 {
 	return THISREAD(int, bw::EntityManager::EntityID);
 }
+//\
+
+
 // EntityManager
 EntityManager* EntityManager::instance()
 {
@@ -66,7 +85,7 @@ EntityMap EntityManager::Entities()
 {
 	return THISREAD(EntityMap, bw::EntityManager::enteredEntities_);
 }
-
+//\
 
 
 #undef THISREAD

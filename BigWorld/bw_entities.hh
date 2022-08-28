@@ -18,6 +18,15 @@ struct Avatar : public Entity
 	Py_dicthead;
 	Py_Attribute(Avatar,PyUnicodeObject*, name);
 
+	Py_AttributePRIVATE(Avatar,PyINT8Object*, dead);
+
+	bool is_dead()
+	{
+		auto isdeadproperty = this->dead();
+		return isdeadproperty->get();
+	}
+
+
 
 /*Avatar.Entity.PyObjectPlus.object
 {
@@ -334,10 +343,20 @@ struct PlayerAvatar : public Avatar
 	Py_dicthead;
 	Py_Attribute(PlayerAvatar, CursorCamera*, AvatarCam); // CursorCamera : BaseCamera : PyObjectPlus : object
 
+
+
 };
-struct Creature : public Avatar
+struct Creature : public Entity
 {
-	
+	Py_dicthead;
+	Py_Attribute(Creature, PyUnicodeObject*, name);
+	Py_AttributePRIVATE(Creature, PyINT8Object*, dead);
+	bool is_dead()
+	{
+		auto isdeadproperty = this->dead();
+		return isdeadproperty->get();
+	}
+
 
 };
 struct NPC : public Avatar

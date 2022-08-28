@@ -6,6 +6,12 @@
 // либо делать read<PyObject> и уже работать с таким объектом
 // либо делать read<PyObject*> и через методы читать от "this" нужные поля 
 // второй варик мне нравится больше , но это как-то стремно как по мне
+#define Py_AttributePRIVATE(CLASS,type,name) private: type name()   {      \
+   auto dict = this->ob_dict( &CLASS::dictoffset);                                          \
+     if (!dict) return nullptr; \
+return (type)dict->find_item(#name); };                                  \
+  public:\
+
 
 #define Py_Attribute(CLASS,type,name)  type name()   {      \
    auto dict = this->ob_dict( &CLASS::dictoffset);                                          \
@@ -99,6 +105,15 @@ public:
 	std::string to_string();
 };
 
+class PyINT8Object : public PyObject // object.h 98 line
+{
+private:
+	long value;
+public:
+	__int8 get();
+	void set(__int8 value);
+
+};
 
 
 class PyUnicodeObject : public PyVarObject // object.h 98 line

@@ -154,6 +154,14 @@
     <ClCompile Include="BigWorld\bw_entities.cc" />
     <ClCompile Include="BigWorld\bw_python.cc" />
     <ClCompile Include="Addr.cc" />
+    <ClCompile Include="temp_overlay\Imgui\imgui.cpp" />
+    <ClCompile Include="temp_overlay\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="temp_overlay\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="temp_overlay\Imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="temp_overlay\Imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="temp_overlay\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="temp_overlay\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="temp_overlay\overlay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigWorld\bw_entities.hh" />
@@ -184,6 +192,26 @@
     <ClInclude Include="Addr.hh" />
     <ClInclude Include="BigWorld\py_offsets.hh" />
     <ClInclude Include="BigWorld\Vectors.hh" />
+    <ClInclude Include="temp_overlay\menu_vars.hh" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9anim.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9core.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9effect.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9math.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9mesh.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9shader.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9shape.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9tex.h" />
+    <ClInclude Include="temp_overlay\Direct3d\d3dx9xof.h" />
+    <ClInclude Include="temp_overlay\Imgui\imconfig.h" />
+    <ClInclude Include="temp_overlay\Imgui\imgui.h" />
+    <ClInclude Include="temp_overlay\Imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="temp_overlay\Imgui\imgui_impl_win32.h" />
+    <ClInclude Include="temp_overlay\Imgui\imgui_internal.h" />
+    <ClInclude Include="temp_overlay\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="temp_overlay\Imgui\imstb_textedit.h" />
+    <ClInclude Include="temp_overlay\Imgui\imstb_truetype.h" />
+    <ClInclude Include="temp_overlay\overlay.h" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="common\dbvm_.asm">
@@ -192,6 +220,13 @@
     <MASM Include="common\kernel_.asm">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="temp_overlay\Direct3d\d3dx9math.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="temp_overlay\Direct3d\d3d9.lib" />
+    <Library Include="temp_overlay\Direct3d\d3dx9.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

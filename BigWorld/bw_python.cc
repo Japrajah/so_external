@@ -114,6 +114,22 @@ size_t PyVarObject::ob_size()
 ///\ 
 
 
+// PyINT8Object
+__int8 PyINT8Object::get()
+{
+	return THISREAD(__int8, &this->value);
+}
+
+void PyINT8Object::set(__int8 val)
+{
+	//	 THISWRITE(__int8, &this->value,val);
+}
+
+
+
+
+//\
+
 
 /// PyStringObject
 std::string PyStringObject::to_string()

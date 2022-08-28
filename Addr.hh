@@ -5,8 +5,9 @@ struct game
 	static inline unsigned long long Base;
 	static inline unsigned long long g_entitymanager;
 	static inline unsigned long long umbra_camera;
-
-	static bool ReaderInit();
+	static inline int pid;
+	static int ReaderInit();
+	
 };
 
 
