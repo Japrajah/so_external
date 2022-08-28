@@ -12,6 +12,16 @@ namespace bw
 		constexpr auto pos = 0x40; // Vector3
 
 	}
+	namespace CameraImpl
+	{
+
+
+
+
+
+		constexpr auto viewmatrix = 0x1e4; // 
+
+	}
 
 
 

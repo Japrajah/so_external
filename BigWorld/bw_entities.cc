@@ -29,10 +29,14 @@ CameraImpl* CameraImpl::Instance()
 	return read<CameraImpl*>(game::umbra_camera);
 }
 
-bool CameraImpl::ProjectWorldToScreen( Vector3 position, Vector2* screenpos)
+bool CameraImpl::ProjectWorldToScreen( Vector3 position, Vector2* screenpos , bool* cachematrix)
 {
 	//auto matrix = read<Matrix4x4>(&this->matrix); // 0x28 w 0x30 h resolution
-	auto matrix = THISREAD(Matrix4x4,0x1e4);
+	static Matrix4x4 matrix;
+	if (!*cachematrix)
+	{
+		*cachematrix = read((__int64)this + bw::CameraImpl::viewmatrix, &matrix, sizeof(Matrix4x4));
+	}
 
 	float sw = bw_globals::Wscreen, sh = bw_globals::Hscreen;
 	float x = matrix.m[0][0] * position.x + matrix.m[0][1] * position.y + matrix.m[0][2] * position.z + matrix.m[0][3];

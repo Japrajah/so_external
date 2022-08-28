@@ -329,7 +329,7 @@ struct CursorCamera : public PyObject // CursorCamera : BaseCamera : PyObjectPlu
 };
 struct CameraImpl  // CursorCamera : BaseCamera : PyObjectPlus : object
 {
-	bool ProjectWorldToScreen(Vector3 target, Vector2* screenpos);
+	bool ProjectWorldToScreen(Vector3 target, Vector2* screenpos,bool* cachematrix);
 	static CameraImpl* Instance();
 };
 

@@ -27,7 +27,7 @@ void TestLoopESP()
 
 		auto entitiesmap = entitymanager->Entities();
 		auto iter = entitiesmap.iter->next();
-
+		bool cahedmatrix = false;
 		for (size_t i = 0; i < entitiesmap.num; i++)
 		{
 			auto entity = iter->entity();
@@ -38,7 +38,7 @@ void TestLoopESP()
 			if (!avatar) continue;
 			Vector2 testscreen;
 			auto testpos = avatar->position();
-			if (!camera->ProjectWorldToScreen(testpos, &testscreen))  continue;
+			if (!camera->ProjectWorldToScreen(testpos, &testscreen, &cahedmatrix))  continue;
 			auto str = avatar->name();
 			if (avatar->is_dead()) 	continue;
 		

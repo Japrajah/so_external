@@ -15,6 +15,7 @@ void TestLoop()
 	while (true)
 	{
 		auto camera = CameraImpl::Instance();
+		bool cahedmatrix = false;
 		if (!camera) continue;
 	
 		auto entitiesmap = entitymanager->Entities();
@@ -30,7 +31,7 @@ void TestLoop()
 				if (!avatar) continue;
 				Vector2 testscreen;
 				auto testpos = avatar->position();
-				if (!camera->ProjectWorldToScreen(testpos,&testscreen))  continue;
+				if (!camera->ProjectWorldToScreen(testpos,&testscreen,&cahedmatrix))  continue;
 
 		}
 
