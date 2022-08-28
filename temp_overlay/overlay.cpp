@@ -14,11 +14,43 @@
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
+bool CreateConsole = true;
+
+struct CurrentProcess {
+	DWORD ID;
+	HANDLE Handle;
+	HWND Hwnd;
+	WNDPROC WndProc;
+	int WindowWidth;
+	int WindowHeight;
+	int WindowLeft;
+	int WindowRight;
+	int WindowTop;
+	int WindowBottom;
+	LPCSTR Title;
+	LPCSTR ClassName;
+	LPCSTR Path;
+}Process;
+struct OverlayWindow {
+	WNDCLASSEX WindowClass;
+	HWND Hwnd;
+	LPCSTR Name;
+}Overlay;
+struct DirectX9Interface {
+	IDirect3D9Ex* IDirect3D9 = NULL;
+	IDirect3DDevice9Ex* pDevice = NULL;
+	D3DPRESENT_PARAMETERS pParameters = { NULL };
+	MARGINS Margin = { -1 };
+	MSG Message = { NULL };
+}DirectX9;
+
+
 
 
 
 void TestLoopESP()
 {
+
 	auto drawlist = ImGui::GetForegroundDrawList();
 	auto entitymanager = EntityManager::instance();
 
@@ -63,7 +95,36 @@ void draw_esp()
 	}
 }
 
-
+void update_vsync()
+{
+	D3DPRESENT_PARAMETERS params;
+	IDirect3DSwapChain9* swapchain; // D3DPRESENT_PARAMETERS*
+	DirectX9.pDevice->GetSwapChain(0, &swapchain);
+	if (swapchain)
+	{
+		swapchain->GetPresentParameters(&params);
+		
+			params.PresentationInterval = menu_vars::overlay_vsync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
+			DirectX9.pDevice->Reset(&params);
+	}
+}
+void update_resolution()
+{
+	D3DPRESENT_PARAMETERS params;
+	IDirect3DSwapChain9* swapchain; // D3DPRESENT_PARAMETERS*
+	DirectX9.pDevice->GetSwapChain(0, &swapchain);
+	if (swapchain)
+	{
+		swapchain->GetPresentParameters(&params);
+		if (params.BackBufferWidth != Process.WindowWidth)
+		{
+			params.BackBufferWidth = Process.WindowWidth;
+			params.BackBufferHeight = Process.WindowHeight;
+			DirectX9.pDevice->Reset(&params);
+		}
+	
+	}
+}
 
 void draw_menu()
 {
@@ -79,6 +140,9 @@ void draw_menu()
 
 		ImGui::Checkbox("ESP Nickname", &menu_vars::esp_nick);
 		ImGui::Separator();
+		if (ImGui::Checkbox("Overlay vsync", &menu_vars::overlay_vsync))
+			update_vsync();
+
 		if (ImGui::IsMousePosValid())
 			ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
 		else
@@ -87,6 +151,8 @@ void draw_menu()
 		ImGui::Text("Overlay %.1f FPS",  ImGui::GetIO().Framerate);
 	}
 	ImGui::End();
+	
+	// IDirect3DDevice9::GetSwapChain to get an instance of IDirect3DSwapChain9 interface.Then call GetPresentParameters to get that structure.
 
 	
 
@@ -95,37 +161,7 @@ void draw_menu()
 
 
 
-bool CreateConsole = true;
 
-struct CurrentProcess {
-	DWORD ID;
-	HANDLE Handle;
-	HWND Hwnd;
-	WNDPROC WndProc;
-	int WindowWidth;
-	int WindowHeight;
-	int WindowLeft;
-	int WindowRight;
-	int WindowTop;
-	int WindowBottom;
-	LPCSTR Title;
-	LPCSTR ClassName;
-	LPCSTR Path;
-}Process;
-
-struct OverlayWindow {
-	WNDCLASSEX WindowClass;
-	HWND Hwnd;
-	LPCSTR Name;
-}Overlay;
-
-struct DirectX9Interface {
-	IDirect3D9Ex* IDirect3D9 = NULL;
-	IDirect3DDevice9Ex* pDevice = NULL;
-	D3DPRESENT_PARAMETERS pParameters = { NULL };
-	MARGINS Margin = { -1 };
-	MSG Message = { NULL };
-}DirectX9;
 
 void InputHandler() {
 	for (int i = 0; i < 5; i++) {
@@ -217,10 +253,8 @@ void MainLoop() {
 			OldRect = TempRect;
 			Process.WindowWidth = TempRect.right;
 			Process.WindowHeight = TempRect.bottom;
-			DirectX9.pParameters.BackBufferWidth = Process.WindowWidth;
-			DirectX9.pParameters.BackBufferHeight = Process.WindowHeight;
 			SetWindowPos(Overlay.Hwnd, (HWND)0, TempPoint.x, TempPoint.y, Process.WindowWidth, Process.WindowHeight, SWP_NOREDRAW);
-			DirectX9.pDevice->Reset(&DirectX9.pParameters);
+			update_resolution();
 		}
 		Render();
 	}
@@ -295,6 +329,7 @@ bool DirectXInit() {
 
 
 	D3DPRESENT_PARAMETERS Params = { 0 };
+	
 	Params.Windowed = TRUE;
 	Params.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	Params.hDeviceWindow = Overlay.Hwnd;
