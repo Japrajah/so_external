@@ -108,7 +108,7 @@ public:
 class PyINT8Object : public PyObject // object.h 98 line
 {
 private:
-	long value;
+	__int8 value;
 public:
 	__int8 get();
 	void set(__int8 value);

@@ -40,7 +40,8 @@ void TestLoopESP()
 			auto testpos = avatar->position();
 			if (!camera->ProjectWorldToScreen(testpos, &testscreen))  continue;
 			auto str = avatar->name();
-			if (avatar->is_dead()) continue;
+			if (avatar->is_dead()) 	continue;
+		
 			
 			drawlist->AddText({ testscreen.x,testscreen.y}, ImColor{ 255,255,255,255 }, "TEST");
 
@@ -352,8 +353,8 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 			DirectX9.pParameters.BackBufferWidth = LOWORD(lParam);
 			DirectX9.pParameters.BackBufferHeight = HIWORD(lParam);
 			HRESULT hr = DirectX9.pDevice->Reset(&DirectX9.pParameters);
-			if (hr == D3DERR_INVALIDCALL)
-				IM_ASSERT(0);
+			/*if (hr == D3DERR_INVALIDCALL)
+				IM_ASSERT(0);*/
 			ImGui_ImplDX9_CreateDeviceObjects();
 		}
 		break;
