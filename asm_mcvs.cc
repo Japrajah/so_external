@@ -50,9 +50,13 @@ int main()
 	int pid = 0;
 	while (true)
 	{
-	 pid = game::ReaderInit();
-	if (pid)
-		break;
+		if (GetAsyncKeyState(VK_F2))
+		{
+			pid = game::ReaderInit();
+			if (pid)
+				break;
+		}
+	
 
 	Sleep(5);
 	}

@@ -3,10 +3,60 @@
 #include <Windows.h>
 static  DBVM dbvm;
 const Process* g_proc;
+//const CR3 UserCR3 = dbvm.GetCR3();
+//const CR3 KrnlCR3 = [&] {
+//	const uintptr_t GsBase = dbvm.ReadMSR(IA32_KERNEL_GS_BASE_MSR);
+//	//The process is not kva-shadowed.
+//	if (dbvm.GetPhysicalAddress(GsBase, UserCR3))
+//		return UserCR3;
+//
+//	error("KVA-SHADOWED"e);
+//
+//	CR3 cr3 = 0;
+//	//Finding KernelDirectoryBase...
+//	for (size_t Offset = 0x1000; Offset < 0x10000 &&
+//		!dbvm.RPM(GsBase + Offset, &cr3, sizeof(cr3), UserCR3); Offset += 0x1000);
+//
+//	verify(cr3);
+//	return cr3;
+//}();
+constexpr auto pass1 = 0xfafafa;
+constexpr auto pass2= 0xDedafafa;
+constexpr auto pass3 = 0xfffefafa;
+
 
 int game::ReaderInit()
 {
-	static auto pd = GetPIDByProcessName("sogame.exe"e);
+	if (!dbvm.GetVersion())
+	{
+		dbvm.SetPassword(pass1, pass2, pass3);
+			if (!dbvm.GetVersion())
+			{
+				return false;
+			}
+	}
+	else
+	{
+		dbvm.ChangePassword(pass1, pass2, pass3);
+	}
+	auto passtest = dbvm.GetMemory();
+	printf("%x\n", passtest);
+
+
+	//auto eacsys = GetKernelModuleAddressVerified("EasyAntiCheat.sys");
+	//if (eacsys)
+	//{
+	//	auto physaddr = dbvm.GetPhysicalAddress((uintptr_t)eacsys, KrnlCR3);
+
+	//	ChangeRegOnBPInfo BP{};
+	//	BP.changeRIP = true;
+	//	BP.newRIP = 0xDEADBEAF;
+	//	dbvm.ChangeRegisterOnBP(physaddr, BP);
+	//}	
+
+
+
+	 auto pd = GetPIDByProcessName("sogame.exe"e);
 	if (!pd)
 		return 0;
 		//error("[USER]Can't find procces!"e); //  replcae with std::exeption?
@@ -28,6 +78,7 @@ error("[DEV]Can't find EntityManager!"e); //
 // umbra.dll  48 8B ? ? ? ? ? 48 8B ? ? E8 ? ? ? ? 48 8B ? 48 8B ? E8;
 game::g_entitymanager = chain69 + read<int>(chain69 + 3i64) + 7i64;
 game::umbra_camera = 0x180098220;
+//processkrnl.GetKernelCR3(4);
 
 
 

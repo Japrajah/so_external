@@ -5,17 +5,20 @@
 #include <dwmapi.h>
 #include <d3d9.h>
 #include <string>
-
+#pragma comment (lib, "d3dx9.lib")
 #include "menu_vars.hh"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_dx9.h"
 #include "Imgui/imgui_impl_win32.h"
 #include "../BigWorld/bw_entities.hh"
+#include "Direct3d/d3dx9core.h"
+#include "../BigWorld/bw_globals.hh"
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
 bool CreateConsole = true;
-constexpr auto menu_key = VK_F1;
+constexpr auto menu_key = VK_F2;
+
 struct CurrentProcess {
 	DWORD ID;
 	HANDLE Handle;
@@ -42,8 +45,8 @@ struct DirectX9Interface {
 	D3DPRESENT_PARAMETERS pParameters = { NULL };
 	MARGINS Margin = { -1 };
 	MSG Message = { NULL };
-}DirectX9;
 
+}DirectX9;
 
 
 
@@ -54,31 +57,32 @@ void TestLoopESP()
 	auto drawlist = ImGui::GetForegroundDrawList();
 	auto entitymanager = EntityManager::instance();
 
-		auto camera = CameraImpl::Instance();
-		if (!camera) return;
+	auto camera = CameraImpl::Instance();
+	if (!camera) return;
 
-		auto entitiesmap = entitymanager->Entities();
-		auto iter = entitiesmap.iter->next();
-		bool cahedmatrix = false;
-		for (size_t i = 0; i < entitiesmap.num; i++)
-		{
-			auto entity = iter->entity();
-			iter = iter->next();
-			if (!entity) continue;
+	auto entitiesmap = entitymanager->Entities();
+	auto iter = entitiesmap.iter->next();
+	bool cahedmatrix = false;
+	for (size_t i = 0; i < entitiesmap.num; i++)
+	{
+		auto entity = iter->entity();
+		iter = iter->next();
+		if (!entity) continue;
 
-			auto avatar = BW_Cast(entity, Creature); // trash
-			if (!avatar) continue;
-			Vector2 testscreen;
-			auto testpos = avatar->position();
-			if (!camera->ProjectWorldToScreen(testpos, &testscreen, &cahedmatrix))  continue;
-			auto str = avatar->name();
-			if (avatar->is_dead()) 	continue;
+		auto avatar = BW_Cast(entity, Avatar); // trash
+		if (!avatar) continue;
+		Vector2 testscreen;
+		auto testpos = avatar->position();
+		if (!camera->ProjectWorldToScreen(testpos, &testscreen, &cahedmatrix))  continue;
+		auto str = avatar->name();
+		if (avatar->is_dead()) 	continue;
 		
-			
-			drawlist->AddText({ testscreen.x,testscreen.y}, ImColor{ 255,255,255,255 }, "TEST");
 
+	
+		drawlist->AddText({ testscreen.x,testscreen.y }, ImColor{ 255,255,255,255 }, "TEST");
+	
 
-		}
+	}
 
 }
 
@@ -103,9 +107,9 @@ void update_vsync()
 	if (swapchain)
 	{
 		swapchain->GetPresentParameters(&params);
-		
-			params.PresentationInterval = menu_vars::overlay_vsync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
-			DirectX9.pDevice->Reset(&params);
+
+		params.PresentationInterval = menu_vars::overlay_vsync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
+		DirectX9.pDevice->Reset(&params);
 	}
 }
 void update_resolution()
@@ -119,10 +123,12 @@ void update_resolution()
 		if (params.BackBufferWidth != Process.WindowWidth)
 		{
 			params.BackBufferWidth = Process.WindowWidth;
+			bw_globals::Wscreen = Process.WindowWidth;
 			params.BackBufferHeight = Process.WindowHeight;
+			bw_globals::Hscreen = Process.WindowHeight;
 			DirectX9.pDevice->Reset(&params);
 		}
-	
+
 	}
 }
 
@@ -130,31 +136,31 @@ void draw_menu()
 {
 	if (menu_vars::show_menu)
 	{
-	static int corner = 0;
-	ImGuiIO& io = ImGui::GetIO();
-	ImGuiWindowFlags window_flags =   ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings  ;
+		static int corner = 0;
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings;
 
-	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-	if (ImGui::Begin("so external", &menu_vars::show_menu, window_flags))
-	{
+		ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+		if (ImGui::Begin("so external", &menu_vars::show_menu, window_flags))
+		{
 
-		ImGui::Checkbox("ESP Nickname", &menu_vars::esp_nick);
-		ImGui::Separator();
-		if (ImGui::Checkbox("Overlay vsync", &menu_vars::overlay_vsync))
-			update_vsync();
+			ImGui::Checkbox("ESP Nickname", &menu_vars::esp_nick);
+			ImGui::Separator();
+			if (ImGui::Checkbox("Overlay vsync", &menu_vars::overlay_vsync))
+				update_vsync();
 
-		if (ImGui::IsMousePosValid())
-			ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-		else
-			ImGui::Text("Mouse Position: <invalid>");
+			if (ImGui::IsMousePosValid())
+				ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
+			else
+				ImGui::Text("Mouse Position: <invalid>");
 
-		ImGui::Text("Overlay %.1f FPS",  ImGui::GetIO().Framerate);
-	}
-	ImGui::End();
-	
-	// IDirect3DDevice9::GetSwapChain to get an instance of IDirect3DSwapChain9 interface.Then call GetPresentParameters to get that structure.
+			ImGui::Text("Overlay %.1f FPS", ImGui::GetIO().Framerate);
+		}
+		ImGui::End();
 
-	
+		// IDirect3DDevice9::GetSwapChain to get an instance of IDirect3DSwapChain9 interface.Then call GetPresentParameters to get that structure.
+
+
 
 	}
 }
@@ -199,7 +205,7 @@ void Render() {
 		SetWindowLong(Overlay.Hwnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
 		UpdateWindow(Overlay.Hwnd);
 	}
-	
+
 
 
 	ImGui::EndFrame();
@@ -225,7 +231,7 @@ void MainLoop() {
 	while (DirectX9.Message.message != WM_QUIT) {
 
 		HWND ForegroundWindow = GetForegroundWindow();
-		
+
 		if (PeekMessage(&DirectX9.Message, Overlay.Hwnd, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&DirectX9.Message);
 			DispatchMessage(&DirectX9.Message);
@@ -248,7 +254,7 @@ void MainLoop() {
 		TempRect.top = TempPoint.y;
 		ImGuiIO& io = ImGui::GetIO();
 		io.ImeWindowHandle = Process.Hwnd;
-		
+
 		if (TempRect.left != OldRect.left || TempRect.right != OldRect.right || TempRect.top != OldRect.top || TempRect.bottom != OldRect.bottom) {
 			OldRect = TempRect;
 			Process.WindowWidth = TempRect.right;
@@ -331,7 +337,7 @@ bool DirectXInit() {
 
 
 	D3DPRESENT_PARAMETERS Params = { 0 };
-	
+
 	Params.Windowed = TRUE;
 	Params.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	Params.hDeviceWindow = Overlay.Hwnd;
@@ -339,10 +345,12 @@ bool DirectXInit() {
 	Params.BackBufferFormat = D3DFMT_A8R8G8B8;
 	Params.BackBufferWidth = Process.WindowWidth;
 	Params.BackBufferHeight = Process.WindowHeight;
+	bw_globals::Wscreen = Process.WindowWidth;
+	bw_globals::Hscreen = Process.WindowHeight;
 	Params.EnableAutoDepthStencil = TRUE;
 	Params.AutoDepthStencilFormat = D3DFMT_D16;
 	Params.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-	Params.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	Params.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT; 
 	if (FAILED(DirectX9.IDirect3D9->CreateDeviceEx(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, Overlay.Hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &Params, 0, &DirectX9.pDevice))) {
 		DirectX9.IDirect3D9->Release();
 		return false;
@@ -353,7 +361,6 @@ bool DirectXInit() {
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGuiStyle& s = ImGui::GetStyle();
 	io.IniFilename = NULL;
-
 
 
 
@@ -371,7 +378,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam) {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, Message, wParam, lParam))
 		return true;
-
 	switch (Message) {
 	case WM_DESTROY:
 		if (DirectX9.pDevice != NULL) {
