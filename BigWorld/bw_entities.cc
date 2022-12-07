@@ -11,6 +11,19 @@ Vector3 Entity::position()
 {
 	return THISREAD(Vector3, bw::Entity::pos);
 }
+
+PyModel* Entity::GetModel()
+{
+		auto Chunkatachment = THISREAD(uintptr_t, bw::Entity::Atachment);
+	if (!Chunkatachment) 
+		return nullptr;
+	return read<PyModel*>(Chunkatachment + bw::ChunkAtachment::pymodel);
+}
+
+
+
+
+
 // Avatar
 
 

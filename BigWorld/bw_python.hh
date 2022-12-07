@@ -13,6 +13,8 @@ return (type)dict->find_item(#name); };                                  \
   public:\
 
 
+
+
 #define Py_Attribute(CLASS,type,name)  type name()   {      \
    auto dict = this->ob_dict( &CLASS::dictoffset);                                          \
      if (!dict) return nullptr; \
@@ -22,7 +24,7 @@ return (type)dict->find_item(#name); };                                  \
 #define Py_dicthead  private: static inline int dictoffset = 0; public:   
 
 
-#define BW_Cast(pyobject,NAME) [&] () { auto type = pyobject->ob_type();         \
+#define IS_A(pyobject,NAME) [&] () { auto type = pyobject->ob_type();         \
     if (!type) return (NAME*)nullptr;                                                   \
         if (type->tp_name() == #NAME) return (NAME*)pyobject; return (NAME*)nullptr; }()   
 
@@ -34,6 +36,45 @@ class PyStringObject;
 
 class PyObject;
 // typeobject.c
+
+class PyHasherComptime {
+public:
+	template<class Type>
+	constexpr static size_t StrLen(const Type* str) {
+		size_t Len = 0;
+		while (str[Len++]);
+		return Len - 1;
+	}
+    		template<class Type>
+	constexpr static unsigned long HashPython(const Type* Data, size_t Size) {
+		unsigned long Result = Data[0];
+        	Result =  Data[0] << 7;
+		for (auto i = 0; i < Size; i++)
+			Result    = (Result *1000003) ^ Data[i] ; // x = (1000003 * x) ^ a[i];
+        	Result ^= Size;
+            if   (Result == -1)
+		     Result = -2;
+		return Result;
+	}
+    template<class Type>
+	constexpr static unsigned long pyStrHash(const Type* Str) {
+		return HashPython(Str, StrLen(Str) );
+	}
+
+	template<class Type>
+	constexpr static unsigned long pyStrHash(std::basic_string<Type> Str) {
+		return pyStrHash(Str.c_str());
+	}
+};
+#pragma warning(disable : 4455)
+consteval static unsigned long  operator""p(const char* str, size_t len) { return PyHasherComptime::pyStrHash(str); }
+
+#define Py_AttributeHASH(CLASS,type,name) private: type name()   {      \
+   auto dict = this->ob_dict( &CLASS::dictoffset);                                          \
+     if (!dict) return nullptr; \
+constexpr long hashe = #name##p ;\
+return (type)dict->find_item_safe(hashe,#name); };                                  \
+  public:\
 
 
 
@@ -57,15 +98,20 @@ struct PyDictEntry
 	PyObject* me_value;
 };
 
+
+
 class PyDictObject : public PyObject
 {
 	public:
 
 		PyDictEntry	at(int i);
 		size_t ma_mask();
+		size_t ma_used();
 	
 	
 		PyObject* find_item(const char* itemname);
+		PyObject* find_item_by_hash(unsigned long me_hash);
+		PyObject* find_item_safe(unsigned long me_hash,const char* itemname);
 
 	Py_ssize_t _ma_fill;  /* # Active + # Dummy */
 	Py_ssize_t _ma_used;  /* # Active */
@@ -114,6 +160,50 @@ public:
 	void set(__int8 value);
 
 };
+class SuperModel
+{
+public:
+	
+
+private:
+
+};
+
+
+
+class PyModel : public PyObject //  PyModel :  public PyAttachment, public Aligned
+{
+private:
+
+	 // void PyModel::drawSkeleton()
+
+	//	typedef StringHashMap< SmartPointer<PyFashion> > Fashions;
+
+	//SuperModel			*pSuperModel_; // // 0x100
+	//ActionQueue			actionQueue_;
+
+	//BoundingBox			localBoundingBox_; // 0x1f0
+	//BoundingBox			localVisibilityBox_; // 0x1fc
+	//float				height_;
+	//bool				visible_; // 0x214
+	//bool				visibleAttachments_;
+	//bool				moveAttachments_;
+	//bool				outsideOnly_;
+	//bool				stipple_;
+	//bool				shimmer_;
+
+	//float				moveScale_; // 0x220
+	//float				actionScale_;
+
+	//Fashions			fashions_;
+	//ModelAlignerPtr		pCouplingFashion_;
+
+	//PyModelNodes		knownNodes_; // 0x270
+public:
+		bool IsVisible();
+				SuperModel* GetSuperModel();
+
+};
 
 
 class PyUnicodeObject : public PyVarObject // object.h 98 line
@@ -123,6 +213,7 @@ private:
 public:
 	size_t lenght() { return this->ob_size(); };
 	std::wstring to_wstring();
+	std::string to_string();
 };
 
 class PyTypeObject : public PyVarObject //  object.h 325 line

@@ -13,6 +13,7 @@
 #include "../BigWorld/bw_entities.hh"
 #include "Direct3d/d3dx9core.h"
 #include "../BigWorld/bw_globals.hh"
+#include <vector>
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dwmapi.lib")
@@ -48,7 +49,35 @@ struct DirectX9Interface {
 
 }DirectX9;
 
+//long py_string_hash(const char* a)
+//{
+//	auto len = strlen(a);
+//	auto lencopy = len;
+//	auto p = (unsigned char*)a;
+//	long x = *p << 7;
+//	while (--len >= 0)
+//		x = (1000003 * x) ^ *p++;
+//	x ^= lencopy;
+//	if (x == -1)
+//		x = -2;
+//	return x;
+//}
 
+
+//
+//long py_string_hash(std::string a)
+//{
+//	auto len = a.size();
+//	auto lencopy = len;
+//	auto p = (unsigned char*)a.c_str();
+//	long x = *p << 7;
+//	while (--len >= 0)
+//		x = (1000003 * x) ^ *p++;
+//	x ^= lencopy;
+//	if (x == -1)
+//		x = -2;
+//	return x;
+//}
 
 
 void TestLoopESP()
@@ -63,27 +92,44 @@ void TestLoopESP()
 	auto entitiesmap = entitymanager->Entities();
 	auto iter = entitiesmap.iter->next();
 	bool cahedmatrix = false;
+
 	for (size_t i = 0; i < entitiesmap.num; i++)
 	{
 		auto entity = iter->entity();
 		iter = iter->next();
 		if (!entity) continue;
-
-		auto avatar = BW_Cast(entity, Avatar); // trash
+		auto avatar = IS_A(entity, Avatar); // trash
+		//auto avatar =  (Avatar*)entity; // trash
 		if (!avatar) continue;
 		Vector2 testscreen;
-		auto testpos = avatar->position();
-		if (!camera->ProjectWorldToScreen(testpos, &testscreen, &cahedmatrix))  continue;
-		auto str = avatar->name();
-		if (avatar->is_dead()) 	continue;
 		
+	auto testpos = avatar->position();
 
+		if (!camera->ProjectWorldToScreen(testpos, &testscreen, &cahedmatrix))  continue;
+
+		auto model = avatar->GetModel();
+				if (!model) continue;
+				auto vis = model->IsVisible();
+	if (avatar->is_dead()) 	continue;
+
+auto str = avatar->GetName();
+	// 	str = avatar->ob_type()->tp_name();
+//	auto team = avatar->GetTeam();
+	if (str.size() == 0)
+	{
+		str = avatar->ob_type()->tp_name().c_str();
+	}
+	//str += std::string(" ")+ std::to_string(team);
+	auto color = ImColor{ 255 * vis,255,255 * vis,255 } ;
 	
-		drawlist->AddText({ testscreen.x,testscreen.y }, ImColor{ 255,255,255,255 }, "TEST");
+				drawlist->AddText({ testscreen.x,testscreen.y },color , str.c_str());
+	
+		
 	
 
 	}
-
+	
+		
 }
 
 
@@ -361,7 +407,7 @@ bool DirectXInit() {
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGuiStyle& s = ImGui::GetStyle();
 	io.IniFilename = NULL;
-
+	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 16, 0, io.Fonts->GetGlyphRangesCyrillic());
 
 
 	ImGui_ImplWin32_Init(Overlay.Hwnd);

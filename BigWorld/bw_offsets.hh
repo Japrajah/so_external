@@ -10,8 +10,15 @@ namespace bw
 
 
 		constexpr auto pos = 0x40; // Vector3
+		constexpr auto Atachment = 0x98; // ChunkAtachment
+		
 
 	}
+	namespace ChunkAtachment
+		{
+					constexpr auto pymodel = 0xd0; // ChunkAtachment
+			
+		}
 	namespace CameraImpl
 	{
 

@@ -1,6 +1,7 @@
 #include "Addr.hh"
 #include "common/process.h"
 #include <Windows.h>
+#include <iostream>
 static  DBVM dbvm;
 const Process* g_proc;
 //const CR3 UserCR3 = dbvm.GetCR3();
@@ -24,6 +25,14 @@ constexpr auto pass1 = 0xfafafa;
 constexpr auto pass2= 0xDedafafa;
 constexpr auto pass3 = 0xfffefafa;
 
+__int64  RtlDecodePointer_ex(__int64 encpointer, unsigned int ntdllcookie)
+{
+	return _rotr64(encpointer, '@' - (ntdllcookie & 0x3F)) ^ ntdllcookie;
+}
+__int64  RtlEncodePointer_ex(__int64 pointer, unsigned int ntdllcookie)
+{
+	return _rotr64(pointer ^ ntdllcookie, ntdllcookie & 0x3F);
+}
 
 int game::ReaderInit()
 {
@@ -43,16 +52,6 @@ int game::ReaderInit()
 	printf("%x\n", passtest);
 
 
-	//auto eacsys = GetKernelModuleAddressVerified("EasyAntiCheat.sys");
-	//if (eacsys)
-	//{
-	//	auto physaddr = dbvm.GetPhysicalAddress((uintptr_t)eacsys, KrnlCR3);
-
-	//	ChangeRegOnBPInfo BP{};
-	//	BP.changeRIP = true;
-	//	BP.newRIP = 0xDEADBEAF;
-	//	dbvm.ChangeRegisterOnBP(physaddr, BP);
-	//}	
 
 
 
@@ -79,7 +78,7 @@ error("[DEV]Can't find EntityManager!"e); //
 game::g_entitymanager = chain69 + read<int>(chain69 + 3i64) + 7i64;
 game::umbra_camera = 0x180098220;
 //processkrnl.GetKernelCR3(4);
-
+printf("[DEV] EntityManager 0x%llx \n", (unsigned long long )game::g_entitymanager);
 
 
 // 48 8B ? ? ? ? ? 48 8B ? ? E8 ? ? ? ? 48 8B ? 48 8B ? E8

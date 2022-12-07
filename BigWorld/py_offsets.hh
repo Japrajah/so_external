@@ -40,6 +40,15 @@ namespace py
 			constexpr auto   ob_item = VarObject::ob_size + nextptr; // PyObject** 
 			constexpr auto allocated = ob_item + nextptr;  //    Py_ssize_t allocated;
 		}
+		namespace Model //  : PyVarObject : PyObject
+		{
+			constexpr auto   SuperModel = 0x100; // SuperModel* 
+			constexpr auto   visible = 0x318;// 0x214; // bool
+			constexpr auto localBoundingBox_ = 0x1f0;// 0x1f0
+			constexpr auto localVisibilityBox_ = 0x1fc; // 0x1fc
+		 // 	PyModelNodes		knownNodes_; // 0x270
+	
+		}
 		// PyObjectPlus this just PyObject but with vtable so every offset += 8;
 }
 	

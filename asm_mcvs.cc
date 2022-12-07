@@ -27,7 +27,7 @@ void TestLoop()
 			iter = iter->next();
 			if (!entity) continue;
 		
-				auto avatar = BW_Cast(entity, PlayerAvatar); // trash
+				auto avatar = IS_A(entity, PlayerAvatar); // trash
 				if (!avatar) continue;
 				Vector2 testscreen;
 				auto testpos = avatar->position();

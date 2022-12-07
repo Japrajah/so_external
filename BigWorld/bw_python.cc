@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <codecvt>
 #include "../Addr.hh"
 #include "bw_python.hh"
 #include "py_offsets.hh"
@@ -72,6 +73,11 @@ size_t	PyDictObject::ma_mask()
 	//return THISREAD(size_t, py::dictObject::ma_mask);
 	return read<size_t>(&this->_ma_mask);
 }
+size_t	PyDictObject::ma_used()
+{
+	//return THISREAD(size_t, py::dictObject::ma_mask);
+	return read<size_t>(&this->_ma_used);
+}
 
 
 PyObject* PyDictObject::find_item(const char* itemname) // 	PyObject* find_item(const char* itemname)
@@ -92,17 +98,113 @@ PyObject* PyDictObject::find_item(const char* itemname) // 	PyObject* find_item(
 		{
 		
 			auto result = ep.me_value;
-			str.~basic_string();
 			delete[] dict_entry;
+			str.~basic_string();
+		
 			return result;
 		}
 			
 	}
 FAIL:
+	delete[] dict_entry;
 	str.~basic_string();
-	 delete[] dict_entry;
+
 	return 0;
 }
+#define INGORE_COLLUSION
+PyObject* PyDictObject::find_item_safe(unsigned long hash,const char* keyword)
+{
+		auto mask = this->ma_mask();
+		auto p_entry = THISREAD(uintptr_t, py::dictObject::ma_table);
+		auto index = hash & mask;
+		auto item = p_entry + (index * sizeof(PyDictEntry));
+		PyDictEntry entry =read<PyDictEntry>(item);
+		if (entry.me_key == NULL)
+		return nullptr;
+		bool collision = entry.me_key->to_string() != keyword;
+		if (collision)
+		{
+	/*		The other half of the strategy is to get the other bits of the hash code
+into play.  This is done by initializing a (unsigned) vrbl "perturb" to the
+full hash code, and changing the recurrence to:
+    j = (5*j) + 1 + perturb;
+auto constexpr	PERTURB_SHIFT = 5;
+    perturb >>= PERTURB_SHIFT; 
+    use j % 2**i as the next table index;*/
+#ifndef INGORE_COLLUSION
+			
+
+			index = (index * 5) + 1 + hash;
+		    index = hash & mask;
+			item = p_entry + (index * sizeof(PyDictEntry));
+			entry =read<PyDictEntry>(item);
+		 if (entry.me_key == NULL)
+			return nullptr;
+		 collision = entry.me_key->to_string() != keyword;
+		 if (collision)
+		 return find_item(keyword);
+#else
+			return nullptr;
+#endif // INGORE_COLLUSION
+		}
+		return	 entry.me_value;
+
+
+		
+}
+
+PyObject* PyDictObject::find_item_by_hash(unsigned long hash) // 	PyObject* find_item(const char* itemname)
+{
+
+		auto dict_size = this->ma_mask();
+	static auto dict_entry = new PyDictEntry[dict_size+1];
+	auto p_entry = THISREAD(uintptr_t, py::dictObject::ma_table);
+	 auto index = hash & dict_size;
+	if (!read(p_entry, dict_entry, dict_size * sizeof(PyDictEntry))) goto FAIL;
+	return dict_entry[index].me_value;
+
+	//for (size_t i = 0  ; i <= dict_size; i++)  // https://github.com/v2v3v4/BigWorld-Engine-2.0.1/blob/master/src/lib/python/Objects/dictobject.c#L944
+	//{
+	//	
+	//	//auto ep = this->at(i); external parse
+	//	auto ep = dict_entry[i];
+	//	auto HASH= ep.me_hash;
+	//	if (HASH == hash) 
+	//	{
+	//	
+	//		auto result = ep.me_value;
+	//		delete[] dict_entry;
+	//		return result;
+	//	}
+	//		
+	//}
+FAIL:
+	//delete[] dict_entry;
+	return 0;
+
+//	auto dict_size = this->ma_mask();
+//	auto dict_entry = new PyDictEntry[dict_size+1];
+//	auto p_entry = THISREAD(uintptr_t, py::dictObject::ma_table);
+//	if (!read(p_entry, dict_entry, dict_size * sizeof(PyDictEntry))) goto FAIL;
+//	for (size_t i = 0; i <= dict_size; i++)  // https://github.com/v2v3v4/BigWorld-Engine-2.0.1/blob/master/src/lib/python/Objects/dictobject.c#L944
+//	{
+//		//auto ep = this->at(i); external parse
+//		auto ep = dict_entry[i];
+//		auto HASH= ep.me_hash;
+//		if (HASH == hash) 
+//		{
+//		
+//			auto result = ep.me_value;
+//			delete[] dict_entry;
+//			return result;
+//		}
+//			
+//	}
+//FAIL:
+//	delete[] dict_entry;
+//	return 0;
+}
+
 ///\ 
 
 
@@ -159,6 +261,15 @@ std::wstring PyUnicodeObject::to_wstring()
 	stack_buffer[127] = L'\0';
 	return std::wstring(stack_buffer);
 }
+std::string PyUnicodeObject::to_string()
+{
+	 auto wstr = this->to_wstring();
+	    std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
+std::string str = utf8_conv.to_bytes(wstr); 
+wstr.~basic_string();
+return str;
+
+}
 
 ///\ 
 
@@ -201,6 +312,15 @@ std::string PyTypeObject::fullname() {
 	}
 	return temp;
 }
+
+
+/// Pymodel
+
+bool PyModel::IsVisible()
+{
+	return THISREAD(bool, py::Model::visible);
+}
+///\ 
 
 ///\ 
 

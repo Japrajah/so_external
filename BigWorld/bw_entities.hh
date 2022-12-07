@@ -1,31 +1,63 @@
 #pragma once
+
+#include <format>
 #include "bw_python.hh"
 #include "Vectors.hh"
 
-
-
-
+	/*BoundingBox bb;
+			models_[i]->localBoundingBox( bb, false );
+			Moo::rc().world( models_[i]->worldTransform() );
+			Geometrics::wireBox( bb, 0xff0000ff );
+			Moo::rc().world( Matrix::identity );*/
+//struct pYmodel
+//{
+// 0x120 BoneNameVector
+//};
+//  ChunkEmbodiment : ChunkItem  
+//struct ChunkEmbodiment
+//{
+//
+//};
 
 
 struct Entity : public PyObject
 {
 	Vector3 position();
-
+	//ChunkEmbodiment ChunkAttachment();
 	
+	PyModel* GetModel();
+
+		// 0x98  -> ChunkAttachment  0xd0 -> PyModel
+	// PyModel -> 0x100 SuperModel -> 0x98 moo::skeleton
 };
 struct Avatar : public Entity
 {
 	Py_dicthead;
-	Py_Attribute(Avatar,PyUnicodeObject*, name);
+	Py_AttributeHASH(Avatar,PyUnicodeObject*, name); // Py_AttributeHASH Py_AttributePRIVATE
 
-	Py_AttributePRIVATE(Avatar,PyINT8Object*, dead);
+	 Py_AttributeHASH( Avatar,PyINT8Object*, dead);
+
+	Py_AttributeHASH(Avatar,PyINT8Object*, teamID);
+
+std::string GetName()
+	{
+		auto n = name();
+		if (!n)
+			return std::string();
+		auto utf = n->to_string();
+		return utf;
+	}
 
 	bool is_dead()
 	{
 		auto isdeadproperty = this->dead();
 		return isdeadproperty->get();
 	}
-
+	char GetTeam()
+	{
+		auto prop = this->teamID();
+		return prop->get();
+	}
 
 
 /*Avatar.Entity.PyObjectPlus.object
@@ -341,7 +373,7 @@ struct CameraImpl  // CursorCamera : BaseCamera : PyObjectPlus : object
 struct PlayerAvatar : public Avatar
 {
 	Py_dicthead;
-	Py_Attribute(PlayerAvatar, CursorCamera*, AvatarCam); // CursorCamera : BaseCamera : PyObjectPlus : object
+	//Py_Attribute(PlayerAvatar, CursorCamera*, AvatarCam); // CursorCamera : BaseCamera : PyObjectPlus : object
 
 
 
@@ -349,8 +381,17 @@ struct PlayerAvatar : public Avatar
 struct Creature : public Entity
 {
 	Py_dicthead;
-	Py_Attribute(Creature, PyUnicodeObject*, name);
-	Py_AttributePRIVATE(Creature, PyINT8Object*, dead);
+	Py_AttributeHASH(Creature,PyUnicodeObject*, name);
+	Py_AttributeHASH(Creature,PyINT8Object*, dead);
+
+	std::string GetName()
+	{
+		auto n = name();
+		if (!n)
+			return std::string();
+		auto utf = n->to_string();
+		return utf;
+	}
 	bool is_dead()
 	{
 		auto isdeadproperty = this->dead();
@@ -369,6 +410,8 @@ struct EntityMapEntry
 {
 	EntityMapEntry* next();
 	Entity* entity();
+
+
 	int entityID();
 };
 struct EntityMap
