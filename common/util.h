@@ -31,20 +31,16 @@ static void MessageBoxCSRSS(const char* szText, const char* szCaption, UINT uTyp
 static void MessageBoxCSRSS(const wchar_t* szText, const wchar_t* szCaption, UINT uType, DWORD dwMilliseconds = INFINITE);
 
 static void error(const char* Msg, const char* Title = "Error"e) {
-#ifdef DEBUG
+
 	MessageBoxA(0, Msg, Title, MB_ICONERROR | MB_TOPMOST);
-#else
-	MessageBoxCSRSS(Msg, Title, MB_ICONERROR);
-#endif
+
 	exit(0);
 }
 
 static void error(const wchar_t* Msg, const wchar_t* Title = L"Error"e) {
-#ifdef DEBUG
+
 	MessageBoxW(0, Msg, Title, MB_ICONERROR | MB_TOPMOST);
-#else
-	MessageBoxCSRSS(Msg, Title, MB_ICONERROR);
-#endif
+
 	exit(0);
 }
 
