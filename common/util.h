@@ -8,7 +8,6 @@
 #include <Psapi.h>
 #include <tlhelp32.h>
 #include <stdio.h>
-#include <atlconv.h>
 #include <algorithm>
 #include <sstream>
 #include <utility>
@@ -79,15 +78,7 @@ static bool IsKeyPushed(int vKey) {
 	return Result;
 }
 
-static std::wstring s2ws(const std::string& str) {
-	USES_CONVERSION;
-	return std::wstring(A2W(str.c_str()));
-}
 
-static std::string ws2s(const std::wstring& wstr) {
-	USES_CONVERSION;
-	return std::string(W2A(wstr.c_str()));
-}
 
 static std::wstring to_hex_string(uintptr_t i) {
 	std::wstringstream s;
@@ -227,8 +218,8 @@ static void MessageBoxCSRSS(const wchar_t* Text, const wchar_t* Caption, UINT uT
 }
 
 static void MessageBoxCSRSS(const char* Text, const char* Caption, UINT uType, DWORD dwMilliseconds) {
-	USES_CONVERSION;
-	MessageBoxCSRSS(A2W(Text), A2W(Caption), uType, dwMilliseconds);
+	
+	//MessageBoxA(Text, Caption, uType, dwMilliseconds);
 }
 
 static DWORD GetPIDFromHWND(HWND hWnd) {
